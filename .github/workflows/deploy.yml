@@ -31,6 +31,9 @@ jobs:
         run: npm install
 
       - name: Build
+        env:
+          VITE_CRM_WEBHOOK_URL: ${{ secrets.VITE_CRM_WEBHOOK_URL }}
+          VITE_WHATSAPP_NUMBER: ${{ secrets.VITE_WHATSAPP_NUMBER }}
         run: npm run build
 
       - name: Setup Pages
