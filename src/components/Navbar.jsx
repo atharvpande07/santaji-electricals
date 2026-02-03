@@ -51,7 +51,7 @@ const Navbar = () => {
                     <Link to="/" className="flex items-center space-x-2" onClick={() => handleNavClick('Logo')}>
                         <div className="flex items-center space-x-2">
                             <img
-                                src="/images/santaji-electricals-logo.png"
+                                src={`${import.meta.env.BASE_URL}images/santaji-electricals-logo.png`}
                                 alt="Santaji Electricals logo"
                                 className="h-10 w-auto object-contain"
                             />

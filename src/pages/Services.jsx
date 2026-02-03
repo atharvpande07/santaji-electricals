@@ -16,8 +16,8 @@ const Services = () => {
         solar: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=800&q=80",
         electrical: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80",
         ev: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80",
-        industrial: "/images/industrial-service.jpg",
-        outdoor: "/images/outdoor-lighting.jpg"
+        industrial: `${import.meta.env.BASE_URL}images/industrial-service.jpg`,
+        outdoor: `${import.meta.env.BASE_URL}images/outdoor-lighting.jpg`
     };
 
     const services = [

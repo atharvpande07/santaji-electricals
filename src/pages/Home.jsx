@@ -17,7 +17,7 @@ const serviceImages = {
     solar: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=800&q=80",
     electrical: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80",
     ev: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80",
-    outdoor: "/images/outdoor-lighting.jpg"
+    outdoor: `${import.meta.env.BASE_URL}images/outdoor-lighting.jpg`
 };
 
 const Home = () => {
@@ -36,7 +36,7 @@ const Home = () => {
         {
             title: 'Expert Electrical Solutions for Every Need',
             subtitle: 'From wiring to industrial panels, we ensure safe and robust electrical systems.',
-            image: '/images/electrification.jpg'
+            image: `${import.meta.env.BASE_URL}images/electrification.jpg`
         },
         {
             title: 'Charge Ahead with Modern EV Charger Installations',
@@ -46,12 +46,12 @@ const Home = () => {
         {
             title: 'Industrial Electrical Excellence',
             subtitle: 'Robust large-scale systems designed for maximum efficiency and uptime.',
-            image: '/images/industrial-hero-new.jpg'
+            image: `${import.meta.env.BASE_URL}images/industrial-hero-new.jpg`
         },
         {
             title: 'Outdoor Lighting Solutions',
             subtitle: 'High-performance AC and Solar street lighting for public and private spaces.',
-            image: '/images/outdoor-lighting.jpg'
+            image: `${import.meta.env.BASE_URL}images/outdoor-lighting.jpg`
         }
     ];
 
