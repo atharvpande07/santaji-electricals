@@ -17,7 +17,7 @@ const submitViaEmbed = async (formData) => {
 
 // Submit via direct webhook (Google Sheets) + Odoo email alias
 const submitViaWebhook = async (formData) => {
-    const ODOO_ALIAS = 'info@santaji-electricals1.odoo.com';
+    const ODOO_ALIAS = 'info@santaji-electricals.odoo.com';
 
     const emailBody = `Service: ${formData.service}
 Name: ${formData.name}
