@@ -15,14 +15,24 @@ const submitViaEmbed = async (formData) => {
     throw new Error('Embedded form submission should be handled by the CRM widget');
 };
 
-// Submit via direct webhook
+// Submit via direct webhook (Google Sheets) + Odoo email alias
 const submitViaWebhook = async (formData) => {
-    const response = await fetch(config.crmWebhookUrl, {
+    const ODOO_ALIAS = 'info@santaji-electricals1.odoo.com';
+
+    const emailBody = `Service: ${formData.service}
+Name: ${formData.name}
+Phone: ${formData.phone}
+Email: ${formData.email || ''}
+District: ${formData.district}
+Message: ${formData.message || ''}`;
+
+    const emailSubject = formData.name || 'New Lead from Website';
+
+    // Fire Google Sheets webhook (existing integration)
+    const sheetsPromise = fetch(config.crmWebhookUrl, {
         method: 'POST',
-        mode: 'no-cors', // This bypasses CORS restrictions
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             name: formData.name,
             phone: formData.phone,
@@ -33,10 +43,31 @@ const submitViaWebhook = async (formData) => {
             timestamp: new Date().toISOString(),
             source: 'website'
         })
-    });
+    }).catch(() => { }); // non-blocking
 
-    // With no-cors mode, we can't read the response
-    // But if the request completes without error, it was successful
+    // Fire Odoo email alias via FormSubmit (background, no-cors)
+    const odooPayload = new FormData();
+    odooPayload.append('_to', ODOO_ALIAS);
+    odooPayload.append('_subject', emailSubject);
+    odooPayload.append('_template', 'table');
+    odooPayload.append('_captcha', 'false');
+    odooPayload.append('_next', window.location.href);
+    odooPayload.append('Service', formData.service);
+    odooPayload.append('Name', formData.name);
+    odooPayload.append('Phone', formData.phone);
+    odooPayload.append('Email', formData.email || '');
+    odooPayload.append('District', formData.district);
+    odooPayload.append('Message', formData.message || '');
+
+    const odooPromise = fetch(`https://formsubmit.co/ajax/${ODOO_ALIAS}`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: odooPayload
+    }).catch(() => { }); // non-blocking — never fails the form
+
+    // Run both in parallel, don't block submission on either
+    await Promise.allSettled([sheetsPromise, odooPromise]);
+
     return { success: true, message: 'Data submitted successfully' };
 };
 

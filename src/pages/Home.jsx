@@ -6,6 +6,7 @@ import SEO from '../components/SEO';
 import LeadForm from '../components/LeadForm';
 import ServiceCard from '../components/ServiceCard';
 import Button from '../components/Button';
+import Testimonials from '../components/Testimonials';
 
 // Placeholder Lottie animation data
 // Replace this with actual Lottie JSON from LottieFiles.com
@@ -219,6 +220,9 @@ const Home = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Testimonials */}
+            <Testimonials />
 
             {/* Trust Indicators */}
             <section className="bg-gray-50 py-12">
