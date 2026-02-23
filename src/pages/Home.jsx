@@ -234,11 +234,11 @@ const Home = () => {
                         className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
                     >
                         <div>
-                            <div className="text-4xl font-bold text-primary-600 mb-2">100+</div>
+                            <div className="text-4xl font-bold text-primary-600 mb-2">1000+</div>
                             <div className="text-gray-600">Projects Completed</div>
                         </div>
                         <div>
-                            <div className="text-4xl font-bold text-primary-600 mb-2">95%</div>
+                            <div className="text-4xl font-bold text-primary-600 mb-2">99%</div>
                             <div className="text-gray-600">Customer Satisfaction</div>
                         </div>
                         <div>
@@ -246,7 +246,7 @@ const Home = () => {
                             <div className="text-gray-600">Support Available</div>
                         </div>
                         <div>
-                            <div className="text-4xl font-bold text-primary-600 mb-2">5+</div>
+                            <div className="text-4xl font-bold text-primary-600 mb-2">10+</div>
                             <div className="text-gray-600">Years Experience</div>
                         </div>
                     </motion.div>

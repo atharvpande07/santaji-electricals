@@ -133,7 +133,7 @@ const About = () => {
                             <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
                             <div className="space-y-4 text-gray-600 text-lg">
                                 <p>
-                                    With over 5 years of experience, Santaji Electricals started with a vision: making
+                                    With over 10+ years of experience, Santaji Electricals started with a vision: making
                                     renewable energy accessible and reliable for every home and business in Maharashtra.
                                 </p>
                                 <p>
@@ -156,10 +156,10 @@ const About = () => {
                             className="grid grid-cols-2 gap-6"
                         >
                             {[
-                                { number: '500+', label: 'Happy Clients' },
+                                { number: '3000+', label: 'Happy Clients' },
                                 { number: '10+', label: 'Years Experience' },
                                 { number: '95%', label: 'Client Retention' },
-                                { number: '50+', label: 'Team Members' }
+                                { number: '15+', label: 'Team Members' }
                             ].map((stat, index) => (
                                 <div key={index} className="bg-gradient-to-br from-primary-50 to-accent-50 rounded-xl p-6 text-center">
                                     <div className="text-4xl font-bold text-primary-600 mb-2">{stat.number}</div>
