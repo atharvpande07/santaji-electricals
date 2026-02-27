@@ -6,21 +6,21 @@ const testimonials = [
         quote: "Fast installation and clear pricing, Bijli bill dropped to nearby 0",
         name: "Ramesh Patil",
         location: "Yavatmal, Maharashtra",
-        avatar: `${import.meta.env.BASE_URL}images/testimonial-avatar-1.png`,
+        avatar: null,
         initials: "RP"
     },
     {
         quote: "Professional team, on-time setup and nice support.",
         name: "Sunita More",
         location: "Pusad, Maharashtra",
-        avatar: `${import.meta.env.BASE_URL}images/testimonial-avatar-2.png`,
+        avatar: null,
         initials: "SM"
     },
     {
         quote: "From survey and net-metering support everything handled they very nicely.",
         name: "Anil Deshmukh",
         location: "Umarkhed, Maharashtra",
-        avatar: `${import.meta.env.BASE_URL}images/testimonial-avatar-3.png`,
+        avatar: null,
         initials: "AD"
     }
 ];
