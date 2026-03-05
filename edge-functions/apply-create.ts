@@ -7,8 +7,8 @@
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
-const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE')!;
+const SUPABASE_URL = 'https://ulsivkvyztvfsdxwpldj.supabase.co';
+const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsc2l2a3Z5enR2ZnNkeHdwbGRqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjcxMDEzNCwiZXhwIjoyMDg4Mjg2MTM0fQ.7mzIYNxY8uiAEZ2f_-uQzydJ6oQyZSl8UEx4eO-9Jt4';
 const RECAPTCHA_SECRET = Deno.env.get('RECAPTCHA_SECRET') ?? '';
 const RATE_LIMIT_MAX = 5;   // max submissions per IP per hour
 
