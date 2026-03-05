@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
+import Apply from './pages/Apply';
 
 import ScrollToTop from './components/ScrollToTop';
 
@@ -25,6 +26,7 @@ function App() {
                         <Route path="/about" element={<About />} />
                         <Route path="/services" element={<Services />} />
                         <Route path="/contact" element={<Contact />} />
+                        <Route path="/apply" element={<Apply />} />
                     </Routes>
                 </AnimatePresence>
             </main>

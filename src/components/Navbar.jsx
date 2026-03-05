@@ -27,6 +27,7 @@ const Navbar = () => {
         { name: 'About', path: '/about' },
         { name: 'Services', path: '/services' },
         { name: 'Contact Us', path: '/contact' },
+        { name: 'Apply Now', path: '/apply', highlight: true },
     ];
 
     const handleNavClick = (linkName) => {
@@ -63,17 +64,28 @@ const Navbar = () => {
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-8">
                         {navLinks.map((link) => (
-                            <Link
-                                key={link.path}
-                                to={link.path}
-                                onClick={() => handleNavClick(link.name)}
-                                className={`text-sm font-semibold transition-colors duration-200 ${location.pathname === link.path
-                                    ? 'text-primary-600'
-                                    : 'text-gray-700 hover:text-primary-600'
-                                    }`}
-                            >
-                                {link.name}
-                            </Link>
+                            link.highlight ? (
+                                <Link
+                                    key={link.path}
+                                    to={link.path}
+                                    onClick={() => handleNavClick(link.name)}
+                                    className="text-sm font-bold bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+                                >
+                                    ☀ {link.name}
+                                </Link>
+                            ) : (
+                                <Link
+                                    key={link.path}
+                                    to={link.path}
+                                    onClick={() => handleNavClick(link.name)}
+                                    className={`text-sm font-semibold transition-colors duration-200 ${location.pathname === link.path
+                                        ? 'text-primary-600'
+                                        : 'text-gray-700 hover:text-primary-600'
+                                        }`}
+                                >
+                                    {link.name}
+                                </Link>
+                            )
                         ))}
                         <motion.button
                             onClick={scrollToContact}
@@ -126,12 +138,14 @@ const Navbar = () => {
                                     key={link.path}
                                     to={link.path}
                                     onClick={() => handleNavClick(link.name)}
-                                    className={`block px-4 py-2 rounded-lg transition-colors ${location.pathname === link.path
-                                        ? 'bg-primary-50 text-primary-600 font-semibold'
-                                        : 'text-gray-700 hover:bg-gray-50'
+                                    className={`block px-4 py-2 rounded-lg transition-colors font-semibold ${link.highlight
+                                        ? 'bg-green-500 text-white hover:bg-green-600'
+                                        : location.pathname === link.path
+                                            ? 'bg-primary-50 text-primary-600'
+                                            : 'text-gray-700 hover:bg-gray-50'
                                         }`}
                                 >
-                                    {link.name}
+                                    {link.highlight ? `☀ ${link.name}` : link.name}
                                 </Link>
                             ))}
                             <button
