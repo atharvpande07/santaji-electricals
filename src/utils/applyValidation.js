@@ -26,9 +26,9 @@ export const validatePAN = (v) => {
     return null;
 };
 
-/** Email: standard format (optional field — only validate if provided) */
+/** Email: standard format (mandatory now) */
 export const validateEmail = (v) => {
-    if (!v || !v.trim()) return null; // optional
+    if (!v || !v.trim()) return 'Gmail  is required';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) return 'Enter a valid email address';
     return null;
 };

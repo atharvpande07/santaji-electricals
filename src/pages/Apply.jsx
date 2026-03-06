@@ -402,9 +402,44 @@ const Apply = () => {
                             />
                             <TextInput id="name" label="Full Name" required value={fields.name} onChange={handleTextChange} error={errors.name} placeholder="e.g. Ramesh Sharma" />
                             <TextInput id="mobile" label="Mobile Number" type="tel" required value={fields.mobile} onChange={handleTextChange} error={errors.mobile} placeholder="e.g. 9876543210" hint="10-digit Indian mobile number" />
-                            <TextInput id="email" label="Gmail / Email" type="email" value={fields.email} onChange={handleTextChange} error={errors.email} placeholder="e.g. name@gmail.com" />
+                            <TextInput id="email" label="Gmail *" type="email" required value={fields.email} onChange={handleTextChange} error={errors.email} placeholder="e.g. name@gmail.com" />
 
-                            {/* ---- Section 2: Electricity / Consumer ---- */}
+                            {/* ---- Section 2: Aadhaar ---- */}
+                            <div className="mt-8">
+                                <SectionHeader
+                                    icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4z" /></svg>}
+                                    title="Aadhaar Card"
+                                    subtitle="Upload both sides of your Aadhaar card"
+                                />
+                                <TextInput id="aadhar_no" label="Aadhaar Number" required value={fields.aadhar_no} onChange={handleTextChange} error={errors.aadhar_no} placeholder="12-digit number" hint="Enter 12-digit Aadhaar number (spaces allowed)" />
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <FileInputCard fieldKey="aadhar_front" {...FILE_FIELDS.aadhar_front} file={files.aadhar_front} error={errors.aadhar_front} progress={fileProgress.aadhar_front} onChange={handleFileChange} />
+                                    <FileInputCard fieldKey="aadhar_back"  {...FILE_FIELDS.aadhar_back} file={files.aadhar_back} error={errors.aadhar_back} progress={fileProgress.aadhar_back} onChange={handleFileChange} />
+                                </div>
+                            </div>
+
+                            {/* ---- Section 3: PAN ---- */}
+                            <div className="mt-8">
+                                <SectionHeader
+                                    icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>}
+                                    title="PAN Card"
+                                    subtitle="Required for subsidy disbursement"
+                                />
+                                <TextInput id="pan_no" label="PAN Number" required value={fields.pan_no} onChange={handleTextChange} error={errors.pan_no} placeholder="e.g. ABCDE1234F" hint="10-character PAN (uppercase)" />
+                                <FileInputCard fieldKey="pan_card" {...FILE_FIELDS.pan_card} file={files.pan_card} error={errors.pan_card} progress={fileProgress.pan_card} onChange={handleFileChange} />
+                            </div>
+
+                            {/* ---- Section 4: Bank Passbook ---- */}
+                            <div className="mt-8">
+                                <SectionHeader
+                                    icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>}
+                                    title="Bank Passbook"
+                                    subtitle="First page showing account details"
+                                />
+                                <FileInputCard fieldKey="bank_passbook" {...FILE_FIELDS.bank_passbook} file={files.bank_passbook} error={errors.bank_passbook} progress={fileProgress.bank_passbook} onChange={handleFileChange} />
+                            </div>
+
+                            {/* ---- Section 5: Electricity / Consumer ---- */}
                             <div className="mt-8">
                                 <SectionHeader
                                     icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}
@@ -420,41 +455,6 @@ const Apply = () => {
                                     progress={fileProgress.electricity_bill}
                                     onChange={handleFileChange}
                                 />
-                            </div>
-
-                            {/* ---- Section 3: Aadhaar ---- */}
-                            <div className="mt-8">
-                                <SectionHeader
-                                    icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4z" /></svg>}
-                                    title="Aadhaar Card"
-                                    subtitle="Upload both sides of your Aadhaar card"
-                                />
-                                <TextInput id="aadhar_no" label="Aadhaar Number" required value={fields.aadhar_no} onChange={handleTextChange} error={errors.aadhar_no} placeholder="12-digit number" hint="Enter 12-digit Aadhaar number (spaces allowed)" />
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <FileInputCard fieldKey="aadhar_front" {...FILE_FIELDS.aadhar_front} file={files.aadhar_front} error={errors.aadhar_front} progress={fileProgress.aadhar_front} onChange={handleFileChange} />
-                                    <FileInputCard fieldKey="aadhar_back"  {...FILE_FIELDS.aadhar_back} file={files.aadhar_back} error={errors.aadhar_back} progress={fileProgress.aadhar_back} onChange={handleFileChange} />
-                                </div>
-                            </div>
-
-                            {/* ---- Section 4: PAN ---- */}
-                            <div className="mt-8">
-                                <SectionHeader
-                                    icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>}
-                                    title="PAN Card"
-                                    subtitle="Required for subsidy disbursement"
-                                />
-                                <TextInput id="pan_no" label="PAN Number" required value={fields.pan_no} onChange={handleTextChange} error={errors.pan_no} placeholder="e.g. ABCDE1234F" hint="10-character PAN (uppercase)" />
-                                <FileInputCard fieldKey="pan_card" {...FILE_FIELDS.pan_card} file={files.pan_card} error={errors.pan_card} progress={fileProgress.pan_card} onChange={handleFileChange} />
-                            </div>
-
-                            {/* ---- Section 5: Bank Passbook ---- */}
-                            <div className="mt-8">
-                                <SectionHeader
-                                    icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>}
-                                    title="Bank Passbook"
-                                    subtitle="First page showing account details"
-                                />
-                                <FileInputCard fieldKey="bank_passbook" {...FILE_FIELDS.bank_passbook} file={files.bank_passbook} error={errors.bank_passbook} progress={fileProgress.bank_passbook} onChange={handleFileChange} />
                             </div>
 
                             {/* ---- Section 6: Signature ---- */}

@@ -118,6 +118,7 @@ export async function submitApplication(textFields, fileMap, onFileProgress = ()
             field,
             storage_path: storagePath,
             filename: file.name,
+            email: textFields.email || '', // Ensure email is a string, default to empty if null/undefined
             size: file.size,
             mime: file.type,
         });
