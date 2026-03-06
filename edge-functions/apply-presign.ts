@@ -10,7 +10,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { crypto } from 'https://deno.land/std@0.177.0/crypto/mod.ts';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
-const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const SERVICE_ROLE_KEY = Deno.env.get('SERVICE_ROLE_KEY')!;
 const BUCKET = 'documents';
 const URL_TTL_SECONDS = 600; // 10 minutes
 
