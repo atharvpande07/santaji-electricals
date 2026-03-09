@@ -17,7 +17,7 @@ const submitViaEmbed = async (formData) => {
 
 // Submit via Odoo email alias (FormSubmit)
 const submitViaWebhook = async (formData) => {
-    const ODOO_ALIAS = 'info@santaji-electricals.odoo.com';
+    const ODOO_ALIAS = 'info@santaji-electricals1.odoo.com';
 
     const emailSubject = formData.name || 'New Lead from Website';
 
