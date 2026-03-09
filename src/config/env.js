@@ -15,10 +15,7 @@ export const config = {
 
 // Determine which CRM method is configured
 export const getCRMMethod = () => {
-    if (config.crmEmbedCode) return 'embed';
-    if (config.crmWebhookUrl) return 'webhook';
-    if (config.crmApiEndpoint && config.crmApiKey) return 'serverless';
-    return null;
+    return 'webhook';
 };
 
 // Validate configuration
