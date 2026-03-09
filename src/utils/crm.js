@@ -34,13 +34,22 @@ const submitViaWebhook = async (formData) => {
     odooPayload.append('District', formData.district);
     odooPayload.append('Message', formData.message || '');
 
-    await fetch(`https://formsubmit.co/ajax/${ODOO_ALIAS}`, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: odooPayload
-    }).catch(() => { }); // non-blocking — never fails the form UI
-
-    return { success: true, message: 'Data submitted successfully' };
+    try {
+        const response = await fetch(`https://formsubmit.co/ajax/${ODOO_ALIAS}`, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: odooPayload
+        });
+        
+        const result = await response.json();
+        if (result.success === 'false' || result.success === false) {
+            throw new Error(result.message || 'FormSubmit submission failed');
+        }
+        
+        return { success: true, message: 'Data submitted successfully' };
+    } catch (error) {
+        throw new Error(`Failed to submit to Odoo: ${error.message}`);
+    }
 };
 
 // Submit via serverless function
