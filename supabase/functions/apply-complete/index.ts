@@ -112,23 +112,136 @@ Deno.serve(async (req: Request) => {
     // -------------------------------------------------------------------------
     // All checks passed — update the row
     // -------------------------------------------------------------------------
-    const { error: updateErr } = await supabase
+    const { error: updateErr, data: updatedApp } = await supabase
         .from('rooftop_applications')
         .update({
             documents: documents,
             status: 'submitted',
             submitted_at: new Date().toISOString(),
         })
-        .eq('id', application_id);
+        .eq('id', application_id)
+        .select('name, mobile, email, consumer_no, aadhar_no, pan_no, submitted_at')
+        .single();
 
-    if (updateErr) {
+    if (updateErr || !updatedApp) {
         console.error('[apply-complete] DB update error:', updateErr);
         return json({ error: 'Failed to finalise application. Please contact support.' }, 500);
     }
 
     console.log(`[apply-complete] Application ${application_id} submitted with ${documents.length} documents`);
+
+    // -------------------------------------------------------------------------
+    // Send Email Notification via Resend API
+    // -------------------------------------------------------------------------
+    // Do not block the application response on email sending, but execute it reliably
+    try {
+        await sendEmailNotification(application_id, updatedApp, documents);
+    } catch (emailErr) {
+        console.error(`[apply-complete] Failed to send email for ${application_id}:`, emailErr);
+    }
+
     return json({ success: true });
 });
+
+/**
+ * Downloads documents from Supabase Storage and sends them via Resend API.
+ */
+async function sendEmailNotification(
+    application_id: string,
+    appData: any,
+    documents: DocumentMeta[]
+) {
+    const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+    if (!RESEND_API_KEY) {
+        throw new Error('RESEND_API_KEY is not set');
+    }
+
+    // Mask Aadhaar (last 4 digits visible)
+    const maskedAadhaar = appData.aadhar_no 
+        ? `****${appData.aadhar_no.slice(-4)}`
+        : 'N/A';
+
+    const emailBody = `New Rooftop Solar Application
+
+Name: ${appData.name || 'N/A'}
+Mobile: ${appData.mobile || 'N/A'}
+Email: ${appData.email || 'N/A'}
+
+Consumer Number: ${appData.consumer_no || 'N/A'}
+Aadhaar: ${maskedAadhaar}
+PAN: ${appData.pan_no || 'N/A'}
+
+Submission Time: ${new Date(appData.submitted_at || Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+`;
+
+    // Process attachments
+    const attachments: { filename: string; content: string }[] = [];
+    let totalSize = 0;
+    const MAX_TOTAL_SIZE = 8 * 1024 * 1024; // ~8MB
+
+    for (const doc of documents) {
+        if (totalSize + doc.size > MAX_TOTAL_SIZE) {
+            console.warn(`[apply-complete] Skipping attachment ${doc.filename}: would exceed 8MB limit`);
+            continue;
+        }
+
+        const { data, error } = await supabase.storage
+            .from(BUCKET)
+            .download(doc.storage_path);
+
+        if (error || !data) {
+            console.error(`[apply-complete] Failed to download document ${doc.filename}:`, error);
+            continue;
+        }
+
+        const arrayBuffer = await data.arrayBuffer();
+        
+        // Convert using Buffer (available in Deno via node compatibility)
+        // Note: For Edge Functions we can also use Deno's native Buffer/encoding capabilities
+        // Deno provides 'Buffer' globally in Edge environments for Node compat if imported,
+        // but it's safest and fastest to use Uint8Array to base64 or a specialized module.
+        // However, as requested to use buffer base64 conversion instead of btoa:
+        // By standard we can rely on standard JS typed arrays or Deno specific base64 standard libraries if imported.
+        // We will inline a helper or use the globally available Buffer if user enforces Node's Buffer.
+        
+        // Because standard Deno Edge functions might need imports for 'Buffer', we'll rely on a lightweight alternative
+        // if Buffer isn't automatically injected, but Node's Buffer is widely used. We'll try to use a reliable
+        // polyfill/native Deno std base64 encoder to be safe in edge functions.
+        // Given the requirement "Use Buffer base64 conversion, not btoa", we will import Buffer from node:buffer
+        const { Buffer } = await import('node:buffer');
+        
+        const base64Content = Buffer.from(arrayBuffer).toString('base64');
+
+        attachments.push({
+            filename: `${doc.field}_${doc.filename}`,
+            content: base64Content
+        });
+
+        totalSize += doc.size;
+    }
+
+    console.log(`[apply-complete] Sending email for ${application_id} with ${attachments.length} attachments (Total encoded size: ~${(totalSize/1024/1024).toFixed(2)}MB)`);
+
+    const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            from: 'Santaji Electricals <onboarding@resend.dev>',
+            to: ['santaji.solar@gmail.com'],
+            subject: `New Rooftop Solar Application - [App ${application_id.substring(0, 8)}]`,
+            text: emailBody,
+            attachments: attachments
+        })
+    });
+
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Resend API Error: ${res.status} ${errText}`);
+    }
+}
 
 function json(body: unknown, status = 200) {
     return cors(new Response(JSON.stringify(body), {
