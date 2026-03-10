@@ -161,66 +161,93 @@ async function sendEmailNotification(
         ? `****${appData.aadhar_no.slice(-4)}`
         : 'N/A';
 
-    const emailBody = `New Rooftop Solar Application
+    let emailHtml = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #ffffff; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <div style="background-color: #0369a1; color: #ffffff; padding: 20px; text-align: center;">
+            <h2 style="margin: 0; font-size: 24px;">New Rooftop Solar Application</h2>
+            <p style="margin: 5px 0 0; opacity: 0.9;">Application ID: ${application_id.substring(0, 8)}</p>
+        </div>
+        
+        <div style="padding: 20px;">
+            <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Applicant Details</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; width: 40%; color: #555;">Name</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; color: #222;">${appData.name || 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; color: #555;">Mobile</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; color: #222;">${appData.mobile || 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; color: #555;">Email</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; color: #222;">${appData.email || 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; color: #555;">Consumer Number</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; color: #222;">${appData.consumer_no || 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; color: #555;">Aadhaar</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; color: #222;">${maskedAadhaar}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; color: #555;">PAN</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; color: #222;">${appData.pan_no || 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; color: #555;">Submission Time</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; color: #222;">${new Date(appData.submitted_at || Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</td>
+                </tr>
+            </table>
 
-Name: ${appData.name || 'N/A'}
-Mobile: ${appData.mobile || 'N/A'}
-Email: ${appData.email || 'N/A'}
-
-Consumer Number: ${appData.consumer_no || 'N/A'}
-Aadhaar: ${maskedAadhaar}
-PAN: ${appData.pan_no || 'N/A'}
-
-Submission Time: ${new Date(appData.submitted_at || Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+            <h3 style="color: #333; margin-top: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Documents Submitted</h3>
+            <div style="margin-top: 20px;">
 `;
 
-    // Process attachments
-    const attachments: { filename: string; content: string }[] = [];
-    let totalSize = 0;
-    const MAX_TOTAL_SIZE = 8 * 1024 * 1024; // ~8MB
+    const URL_EXPIRATION_SECONDS = 48 * 60 * 60; 
 
     for (const doc of documents) {
-        if (totalSize + doc.size > MAX_TOTAL_SIZE) {
-            console.warn(`[apply-complete] Skipping attachment ${doc.filename}: would exceed 8MB limit`);
-            continue;
-        }
-
         const { data, error } = await supabase.storage
             .from(BUCKET)
-            .download(doc.storage_path);
+            .createSignedUrl(doc.storage_path, URL_EXPIRATION_SECONDS);
+
+        // Format field nicely (e.g. "aadhar_front" -> "Aadhaar Front")
+        let formattedField = doc.field
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+            
+        // standardize Aadhaar spelling visually in the email
+        formattedField = formattedField.replace(/Aadhar/i, 'Aadhaar');
 
         if (error || !data) {
-            console.error(`[apply-complete] Failed to download document ${doc.filename}:`, error);
-            continue;
+            console.error(`[apply-complete] Failed to generate signed URL for document ${doc.filename}:`, error);
+            emailHtml += `
+                <div style="margin-bottom: 15px;">
+                    <span style="display: block; padding: 12px 20px; background-color: #fee2e2; color: #991b1b; border-radius: 6px; font-weight: bold; border: 1px solid #fca5a5; text-align: center;">
+                        Error: Could not link ${formattedField}
+                    </span>
+                </div>`;
+        } else {
+            emailHtml += `
+                <div style="margin-bottom: 15px;">
+                    <a href="${data.signedUrl}" target="_blank" style="display: block; padding: 12px 20px; background-color: #f0f9ff; color: #0284c7; text-decoration: none; border-radius: 6px; font-weight: bold; border: 1px solid #bae6fd; text-align: center; font-size: 16px;">
+                        View ${formattedField}
+                    </a>
+                </div>`;
         }
-
-        const arrayBuffer = await data.arrayBuffer();
-        
-        // Convert using Buffer (available in Deno via node compatibility)
-        // Note: For Edge Functions we can also use Deno's native Buffer/encoding capabilities
-        // Deno provides 'Buffer' globally in Edge environments for Node compat if imported,
-        // but it's safest and fastest to use Uint8Array to base64 or a specialized module.
-        // However, as requested to use buffer base64 conversion instead of btoa:
-        // By standard we can rely on standard JS typed arrays or Deno specific base64 standard libraries if imported.
-        // We will inline a helper or use the globally available Buffer if user enforces Node's Buffer.
-        
-        // Because standard Deno Edge functions might need imports for 'Buffer', we'll rely on a lightweight alternative
-        // if Buffer isn't automatically injected, but Node's Buffer is widely used. We'll try to use a reliable
-        // polyfill/native Deno std base64 encoder to be safe in edge functions.
-        // Given the requirement "Use Buffer base64 conversion, not btoa", we will import Buffer from node:buffer
-        const { Buffer } = await import('node:buffer');
-        
-        const base64Content = Buffer.from(arrayBuffer).toString('base64');
-
-        attachments.push({
-            filename: `${doc.field}_${doc.filename}`,
-            content: base64Content
-        });
-
-        totalSize += doc.size;
     }
+    
+    emailHtml += `
+            </div>
+        </div>
+        <div style="background-color: #f8fafc; padding: 15px; text-align: center; color: #64748b; font-size: 12px; border-top: 1px solid #e2e8f0;">
+            This is an automated notification from the Santaji Electricals backend.
+        </div>
+    </div>`;
 
-    console.log(`[apply-complete] Sending email for ${application_id} with ${attachments.length} attachments (Total encoded size: ~${(totalSize/1024/1024).toFixed(2)}MB)`);
+    console.log(`[apply-complete] Sending HTML email for ${application_id}`);
 
     const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -232,8 +259,7 @@ Submission Time: ${new Date(appData.submitted_at || Date.now()).toLocaleString('
             from: 'Santaji Electricals <onboarding@resend.dev>',
             to: ['santaji.solar@gmail.com'],
             subject: `New Rooftop Solar Application - [App ${application_id.substring(0, 8)}]`,
-            text: emailBody,
-            attachments: attachments
+            html: emailHtml
         })
     });
 
