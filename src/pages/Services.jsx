@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 import ServiceCard from '../components/ServiceCard';
 import LeadForm from '../components/LeadForm';
+import CTASection from '../components/CTASection';
 
 const Services = () => {
     const pageVariants = {
@@ -353,6 +354,9 @@ const Services = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Call To Action */}
+            <CTASection />
 
             {/* Contact Form */}
             <section id="contact-form" className="section-padding bg-gray-50">

@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 import LeadForm from '../components/LeadForm';
 
 const Contact = () => {
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.scrollToForm) {
+            // Slight delay to ensure Framer Motion rendering completes
+            const timer = setTimeout(() => {
+                const contactForm = document.getElementById('contact-form');
+                if (contactForm) {
+                    contactForm.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [location]);
     const pageVariants = {
         initial: { opacity: 0, y: 20 },
         animate: { opacity: 1, y: 0 },
@@ -140,6 +155,7 @@ const Contact = () => {
 
                         {/* Right Column — Lead Form */}
                         <motion.div
+                            id="contact-form"
                             initial={{ opacity: 0, x: 50 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}

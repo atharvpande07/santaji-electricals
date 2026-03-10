@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trackButtonClick } from '../utils/analytics';
 
@@ -7,6 +7,7 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -36,10 +37,16 @@ const Navbar = () => {
 
     const scrollToContact = () => {
         trackButtonClick('contact_cta', 'navbar');
-        const contactForm = document.getElementById('contact-form');
-        if (contactForm) {
-            contactForm.scrollIntoView({ behavior: 'smooth' });
+        if (location.pathname === '/contact') {
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            // Route to Contact page and pass a state flag so Contact.jsx knows to scroll down
+            navigate('/contact', { state: { scrollToForm: true } });
         }
+        setIsMobileMenuOpen(false);
     };
 
     return (

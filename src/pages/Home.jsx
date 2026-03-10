@@ -7,6 +7,7 @@ import LeadForm from '../components/LeadForm';
 import ServiceCard from '../components/ServiceCard';
 import Button from '../components/Button';
 import Testimonials from '../components/Testimonials';
+import CTASection from '../components/CTASection';
 
 // Placeholder Lottie animation data
 // Replace this with actual Lottie JSON from LottieFiles.com
@@ -151,7 +152,7 @@ const Home = () => {
                                     className="text-center lg:text-left"
                                 >
                                     <div className="inline-block px-4 py-1.5 bg-white border border-primary-100 rounded-full text-primary-600 font-semibold text-sm mb-6 shadow-sm">
-                                        Trusted by 500+ Happy Customers
+                                        Trusted by Thousands of Happy Customers
                                     </div>
                                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
                                         {slides[currentSlide].title}
@@ -161,22 +162,19 @@ const Home = () => {
                                     </p>
 
                                     {/* Static Buttons (Persistent) */}
-                                    <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                        <Button
-                                            onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
-                                            variant="primary"
-                                            size="lg"
-                                            className="shadow-lg hover:shadow-primary-500/30"
+                                    <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-8">
+                                        <Link
+                                            to="/apply"
+                                            className="bg-green-500 hover:bg-green-600 text-white font-bold text-lg px-8 py-3 rounded-full flex items-center justify-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-95"
                                         >
-                                            Get Free Quote
-                                        </Button>
-                                        <Button
-                                            onClick={() => navigate('/services')}
-                                            variant="outline"
-                                            size="lg"
+                                            <span className="text-xl">☀️</span> Apply Now
+                                        </Link>
+                                        <Link
+                                            to="/contact"
+                                            className="bg-white/90 hover:bg-white text-gray-900 border-2 border-transparent font-semibold text-lg px-8 py-3 rounded-full flex items-center justify-center transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
                                         >
-                                            View Services
-                                        </Button>
+                                            Contact Us
+                                        </Link>
                                     </div>
                                 </motion.div>
                             </AnimatePresence>
@@ -395,6 +393,9 @@ const Home = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Call To Action */}
+            <CTASection />
 
             {/* Contact Form Section */}
             <section id="contact-form" className="section-padding bg-white">

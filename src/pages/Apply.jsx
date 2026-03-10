@@ -234,6 +234,7 @@ const Apply = () => {
     const [submitPhase, setSubmitPhase] = useState(''); // '' | 'creating' | 'uploading' | 'finalizing'
     const [submitError, setSubmitError] = useState('');
     const [successId, setSuccessId] = useState(null);
+    const successRef = useRef(null);
 
     // -----------------------------------------------------------------------
     // Handlers
@@ -309,6 +310,11 @@ const Apply = () => {
             );
             setSubmitPhase('finalizing');
             setSuccessId(application_id);
+            
+            // Scroll to the success banner instantly after react re-renders
+            setTimeout(() => {
+                successRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         } catch (err) {
             setSubmitError(err.message || 'An unexpected error occurred. Please try again.');
         } finally {
@@ -375,7 +381,7 @@ const Apply = () => {
                 <div className="container-custom max-w-3xl">
 
                     {successId ? (
-                        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-10">
+                        <div ref={successRef} className="bg-white rounded-2xl shadow-xl p-6 md:p-10 scroll-mt-24">
                             <SuccessScreen applicationId={successId} />
                         </div>
                     ) : (

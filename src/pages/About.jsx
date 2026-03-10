@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 import LeadForm from '../components/LeadForm';
+import CTASection from '../components/CTASection';
 
 const About = () => {
     const pageVariants = {
@@ -334,7 +335,10 @@ const About = () => {
                 </div>
             </section>
 
-            {/* CTA Section */}
+            {/* Global Call To Action */}
+            <CTASection />
+
+            {/* Contact Form */}
             <section id="contact-form" className="section-padding bg-gray-50">
                 <div className="container-custom">
                     <motion.div
