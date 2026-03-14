@@ -63,7 +63,7 @@ const Contact = () => {
                 </svg>
             ),
             label: 'Service Area',
-            value: 'Serving all districts across Maharashtra'
+            value: 'Serving all districts across Maharashtra State'
         },
         {
             icon: (
